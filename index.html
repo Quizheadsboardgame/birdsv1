@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRDS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif; /* Standard font */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: transparent; /* Fully transparent background */
+            color: black; /* Standard text color */
+            text-align: center;
+        }
+
+        #quiz-container {
+            background-color: transparent; /* Fully transparent container */
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        #logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .answer {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: white; /* Change the answer color to white */
+        }
+
+        #next-button {
+            background-color: white; /* Change background color to white */
+            color: black; /* Change text color to black for visibility */
+            border: 2px solid #ff9900; /* Optional: Add a border for better visibility */
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #next-button:hover {
+            background-color: #ffcc00; /* Change hover color for better effect */
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fadeOut {
+            animation: fadeOut 0.5s forwards;
+        }
+
+        .fadeIn {
+            animation: fadeIn 0.5s forwards;
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <img id="logo" src="https://i.imgur.com/cyZ0Z21.png" alt="Birds Logo">
+    <h1>BIRDS</h1>
+    <div id="question-container">
+        <div class="question" id="question">Loading question...</div>
+        <div class="answer" id="answer">Loading answer...</div>
+        <button id="next-button" onclick="nextQuestion()">Next Question</button>
+    </div>
+</div>
+
+<script>
+    // Question and answers data
+    const quizData = [
+        { question: "What is the largest species of bird in the world?", answer: "Ostrich." },
+        { question: "Which bird is known for its ability to mimic sounds, including human speech?", answer: "Lyrebird." },
+        { question: "What bird is often associated with delivering babies in popular folklore?", answer: "Stork." },
+        { question: "What is the fastest bird in the world?", answer: "Peregrine Falcon (during a dive)." },
+        { question: "Which bird is known for its distinctive bright red breast?", answer: "American Robin." },
+        { question: "What type of bird can be found on the Galápagos Islands and is known for its different beak sizes?", answer: "Darwin's Finches." },
+        { question: "Which bird has the largest wingspan of any living bird?", answer: "Wandering Albatross." },
+        { question: "What bird is known for its colorful plumage and is a symbol of tropical rainforests?", answer: "Macaw." },
+        { question: "Which bird is famous for its courtship dance that involves elaborate displays?", answer: "Bird of Paradise." },
+        { question: "What flightless bird is native to New Zealand?", answer: "Kiwi." },
+        { question: "What is the smallest bird in the world?", answer: "Bee Hummingbird." },
+        { question: "Which bird is known for its ability to fly backwards?", answer: "Hummingbird." },
+        { question: "What bird builds the largest nest of any bird species?", answer: "Sociable Weaver." },
+        { question: "Which bird is famous for its long migrations and can fly thousands of miles?", answer: "Arctic Tern." },
+        { question: "What bird is known for its striking blue coloration and is often found in gardens?", answer: "Blue Jay." },
+        { question: "What bird can live for more than 80 years and is known for its intelligence?", answer: "African Grey Parrot." },
+        { question: "Which bird has a long, curved bill and is known for feeding on nectar?", answer: "Hummingbird." },
+        { question: "What is the only bird known to be able to see ultraviolet light?", answer: "Pigeon." },
+        { question: "Which bird is known for its elaborate nest structures and ability to imitate other birds?", answer: "Lyrebird." },
+        { question: "What is the national bird of the United States?", answer: "Bald Eagle." },
+        { question: "Which bird is recognized for its long, elegant neck and is often seen in water?", answer: "Swan." },
+        { question: "What type of bird is known for its bright plumage and musical songs, often found in tropical regions?", answer: "Songbird." },
+        { question: "Which bird has the ability to sleep while flying?", answer: "Common Swift." },
+        { question: "What bird is known as the 'flamingo's cousin' and has a similar appearance?", answer: "Roseate Spoonbill." },
+        { question: "Which bird is famous for its unique tail feathers and is known for its elaborate courtship displays?", answer: "Peacock." },
+        { question: "What is the primary diet of a carnivorous bird like an eagle?", answer: "Meat (small mammals, fish, etc.)." },
+        { question: "Which bird is known for making its nest out of mud and twigs, often found near human dwellings?", answer: "Swallow." },
+        { question: "What bird is known for its exceptional navigational skills during migrations?", answer: "Homing Pigeon." },
+        { question: "Which bird is known for its elaborate vocalizations and can mimic other bird calls?", answer: "Mockingbird." },
+        { question: "What type of bird is a cassowary, and where is it primarily found?", answer: "Flightless bird, native to New Guinea and surrounding islands." },
+        { question: "What bird is known for its distinctive call that sounds like 'Who cooks for you?'", answer: "Barred Owl." },
+        { question: "Which bird has a specialized tongue that can extend to reach nectar deep inside flowers?", answer: "Hummingbird." },
+        { question: "What is the fastest bird on land?", answer: "Ostrich." },
+        { question: "Which bird is known for its colorful feathers and is often associated with good luck?", answer: "Quetzal." },
+        { question: "What is the primary reason for birds to migrate?", answer: "To find food and suitable breeding grounds." },
+        { question: "Which bird can rotate its head almost 360 degrees?", answer: "Owl." },
+        { question: "What bird is known for its intelligence and ability to solve complex problems?", answer: "Crow." },
+        { question: "Which bird is famous for its striking plumage and can be found in rainforests?", answer: "Scarlet Macaw." },
+        { question: "What bird is commonly associated with peace and is often depicted in art and literature?", answer: "Dove." },
+        { question: "Which bird is known for its elaborate and vibrant courtship displays?", answer: "Bird of Paradise." },
+        { question: "What is the primary diet of the woodpecker?", answer: "Insects, especially larvae found in trees." },
+        { question: "Which bird is famous for its role in the Harry Potter series?", answer: "Owl (specifically, Hedwig)." },
+        { question: "What type of bird is a toucan, and what is it known for?", answer: "Tropical bird known for its large, colorful bill." },
+        { question: "Which bird is known for its strong, hooked beak used for tearing flesh?", answer: "Eagle." },
+        { question: "What bird is often seen as a symbol of wisdom and is associated with the goddess Athena in Greek mythology?", answer: "Owl." },
+        { question: "Which bird is known for its ability to mimic human speech and sounds?", answer: "African Grey Parrot." },
+        { question: "What bird is famous for its striking plumage and elaborate mating rituals?", answer: "Peacock." },
+        { question: "Which bird is known for its unique ability to dive underwater to catch fish?", answer: "Kingfisher." },
+        { question: "What bird is famous for its 'dancing' courtship display that includes flapping and jumping?", answer: "Western Grebe." },
+        { question: "Which bird is known as the 'National Bird of India'?", answer: "Indian Peafowl (Peacock)." },
+        { question: "What is the primary role of a bird's feathers?", answer: "Insulation, flight, and display." },
+        { question: "Which bird has a distinctive forked tail and is known for its aerial acrobatics?", answer: "Swallow." },
+        { question: "What type of bird is known for its scavenging habits and is often found in urban areas?", answer: "Common Crow." },
+        { question: "Which bird is known for its long, slender legs and is often found wading in wetlands?", answer: "Heron." },
+        { question: "What is the main diet of the raptor family, which includes hawks and eagles?", answer: "Meat (other birds, small mammals, etc.)." },
+        { question: "Which bird is known for its distinctive, melodious song and can be found in backyards?", answer: "American Robin." },
+        { question: "What bird is recognized for its striking plumage and long tail feathers, often seen in tropical regions?", answer: "Resplendent Quetzal." },
+        { question: "Which bird is known for its ability to dive underwater and is often found near lakes and rivers?", answer: "Common Merganser." },
+        { question: "What is the purpose of a bird's beak shape?", answer: "Adaptation to their diet (e.g., seed-crackers, nectar-feeders)." },
+        { question: "Which bird is known for its ability to soar at high altitudes during migration?", answer: "Albatross." },
+        { question: "What bird is famous for its colorful plumage and is often kept as a pet?", answer: "Lovebird." },
+        { question: "Which bird has a unique adaptation of having webbed feet for swimming?", answer: "Duck." },
+        { question: "What bird is known for its ability to perform complex aerial displays during courtship?", answer: "Manakin." },
+        { question: "Which bird is recognized for its large size and long legs, often seen in open grasslands?", answer: "Ostrich." },
+        { question: "What is the name of the bird that is known for its unique call, which sounds like laughter?", answer: "Kookaburra." },
+        { question: "Which bird is often found in flocks and is known for its distinctive red beak?", answer: "American Robin." },
+        { question: "What type of bird is a vulture, and what is its primary role in the ecosystem?", answer: "Scavenger, helps clean up dead animals." },
+        { question: "Which bird is known for its ability to use tools, such as using sticks to extract insects?", answer: "New Caledonian Crow." },
+        { question: "What bird is often associated with Christmas and has a bright red breast?", answer: "European Robin." },
+        { question: "Which bird is known for its incredible navigation skills and is often used in pigeon racing?", answer: "Homing Pigeon." },
+        { question: "What bird is famous for its elaborate courtship display, which includes jumping and spinning?", answer: "Greater Sage-Grouse." },
+        { question: "Which bird has a long, slender body and is known for its hovering flight?", answer: "Hummingbird." },
+        { question: "What is the primary diet of a seed-eating bird like a finch?", answer: "Seeds and grains." },
+        { question: "Which bird is known for its unique nesting behavior, where it builds nests in large colonies?", answer: "Sociable Weaver." },
+        { question: "What bird is often seen as a symbol of love and is known for forming monogamous pairs?", answer: "Dove." },
+        { question: "Which bird is famous for its vibrant plumage and can be found in the Amazon rainforest?", answer: "Scarlet Macaw." },
+        { question: "What bird has a unique adaptation of being able to see in the dark?", answer: "Owl." },
+        { question: "Which bird is known for its ability to soar without flapping its wings for long periods?", answer: "Turkey Vulture." },
+        { question: "What bird is often kept as a pet and is known for its playful and social nature?", answer: "Parakeet (Budgerigar)." },
+        { question: "Which bird is famous for its elaborate vocalizations and can imitate other sounds in its environment?", answer: "Lyrebird." },
+        { question: "What is the name of the bird that is known for its striking yellow plumage and can be found in North America?", answer: "American Goldfinch." },
+        { question: "Which bird is recognized for its long, slender body and is often seen near water bodies?", answer: "Sandpiper." },
+        { question: "What bird is known for its ability to glide gracefully through the air?", answer: "Swallow." },
+        { question: "Which bird is famous for its migratory patterns and can travel thousands of miles each year?", answer: "Arctic Tern." },
+        { question: "What is the primary diet of a raptor like a falcon?", answer: "Small mammals and birds." },
+        { question: "Which bird is known for its distinctive call, which sounds like a cow mooing?", answer: "Common Loon." },
+        { question: "What bird is recognized for its vibrant colors and can be found in the African savanna?", answer: "African Grey Parrot." },
+        { question: "Which bird is known for its remarkable memory and ability to recognize human faces?", answer: "Crow." },
+        { question: "What bird is famous for its long migration from the Arctic to the Antarctic?", answer: "Arctic Tern." },
+        { question: "Which bird has a specialized beak for cracking nuts and seeds?", answer: "Macaw." },
+        { question: "What bird is often associated with Halloween and is known for its dark plumage?", answer: "Raven." },
+        { question: "Which bird is known for its beautiful plumage and can be found in tropical rainforests?", answer: "Resplendent Quetzal." },
+        { question: "What is the primary function of a bird's preen gland?", answer: "To produce oil for feather maintenance." },
+        { question: "Which bird is known for its striking coloration and can be found in both North and South America?", answer: "Blue Jay." },
+        { question: "What bird has a long, curved bill and is often seen probing in mud for food?", answer: "Curlew." },
+        { question: "Which bird is famous for its vibrant plumage and is often kept in aviaries?", answer: "Finch." },
+        { question: "What bird is known for its exceptional endurance during long flights?", answer: "Albatross." },
+        { question: "Which bird is often associated with good luck and is known for its beautiful song?", answer: "Nightingale." },
+        { question: "What bird is recognized for its striking yellow and black plumage?", answer: "American Goldfinch." },
+        { question: "Which bird is known for its unique ability to sleep while perched on a branch?", answer: "Flamingo." }
+    ];
+
+    let currentQuestionIndex = 0;
+
+    // Shuffle the questions
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    shuffle(quizData);
+
+    // Load the current question and answer
+    function loadQuestion() {
+        const questionContainer = document.getElementById("question");
+        const answerContainer = document.getElementById("answer");
+
+        const currentQuestion = quizData[currentQuestionIndex];
+
+        questionContainer.classList.add("fadeOut");
+        answerContainer.classList.add("fadeOut");
+
+        setTimeout(() => {
+            questionContainer.innerText = currentQuestion.question;
+            answerContainer.innerText = currentQuestion.answer;
+
+            questionContainer.classList.remove("fadeOut");
+            questionContainer.classList.add("fadeIn");
+            answerContainer.classList.remove("fadeOut");
+            answerContainer.classList.add("fadeIn");
+        }, 500);
+    }
+
+    // Move to the next question
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            const questionContainer = document.getElementById("question");
+            const answerContainer = document.getElementById("answer");
+            questionContainer.innerText = "Quiz Completed!";
+            answerContainer.innerText = "";
+            document.getElementById("next-button").style.display = "none"; // Hide the next button
+        }
+    }
+
+    // Initial load
+    loadQuestion();
+</script>
+
+</body>
+</html>
